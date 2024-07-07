@@ -29,7 +29,7 @@ def main(args):
         for input_line in input_lines:
             if args.sub_command == 'xor':
                 output_lines.append(xor(list(input_line), list(args.key)))
-            elif args.sub_command == 'passthrough':
+            else:
                 output_lines.append(input_line)
 
     if args.binary:
@@ -83,12 +83,9 @@ def main(args):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.description = "Transforms the contents of a file, either to a C/C++ include, or to an asm include, or to a raw binary file, with or without XOR encryption\n\
+    parser = argparse.ArgumentParser(description='Transforms the contents of a file, either to a C/C++ include, or to an asm include, or to a raw binary file, with or without XOR encryption\n\
         Pass a filename with extension .h/.hpp/.hxx to get a C/C++ include file\n\
-        Pass a filename with extension .s/.asm to get a assembly include file."
-
-    parser.epilog = "Happy XORing"
+        Pass a filename with extension .s/.asm to get a assembly include file.', epilog='Happy XORing')
 
     parser.add_argument('-i', '--input-file-path',
                         required=True, help='Input file path to be transformed')
@@ -109,9 +106,5 @@ if __name__ == '__main__':
     xor_subparser.add_argument(
         '-k', '--key', required=True, help='Value to encrypt the data with')
 
-    # Passthrough sub command
-    passthrough_subparser = subparsers.add_parser('passthrough')
-
     args = parser.parse_args()
-
     main(args)
