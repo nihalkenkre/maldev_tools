@@ -93,7 +93,7 @@ if __name__ == '__main__':
         '-ofp', '--output-file-path', required=True, help='Output path for the transformed data')
 
     mutex_group = parser.add_mutually_exclusive_group(required=True)
-    mutex_group.add_argument('-vn', '--variable_name',
+    mutex_group.add_argument('-vn', '--variable-name',
                              help='Name of the variable in the include file')
     mutex_group.add_argument(
         '-b', '--binary', action='store_true', help='Output the contents as raw binary')

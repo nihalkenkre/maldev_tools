@@ -79,8 +79,48 @@ def main(args):
         shellcode = xored_data
 
     # Write out the shellcode to file
-    with open(args.output_file_path, 'wb') as output_file:
-        output_file.write(shellcode)
+    # Check if the output file is a C/ASM include
+    file_ext = args.output_file_path.split('.')[-1]
+
+    if file_ext == 'h' or file_ext == 'hpp' or file_ext == 'hxx':
+        output_str = 'unsigned char ' + args.variable_name + '[] = {'
+
+        output_byte_counter = 0
+
+        for each in shellcode:
+            output_str += hex(each)
+            output_str += ','
+            output_byte_counter += 1
+
+        output_str += '};'
+        output_str += '\n'
+        output_str += 'size_t ' + args.variable_name + \
+            '_len = ' + str(output_byte_counter) + ';'
+        output_str += '\n'
+
+        with open(args.output_file_path, 'w') as output_file:
+            output_file.write(output_str)
+
+    elif file_ext == 'asm' or file_ext == 's':
+        output_str = args.variable_name + ': db '
+
+        output_byte_counter = 0
+
+        for each in shellcode:
+            output_str += hex(each)
+            output_str += ','
+            output_byte_counter += 1
+
+        output_str += '0'
+
+        output_str += '\n'
+        output_str += '.len equ $ - ' + args.variable_name + ' - 1\n'
+
+        with open(args.output_file_path, 'w') as output_file:
+            output_file.write(output_str)
+    else:
+        with open(args.output_file_path, 'wb') as output_file:
+            output_file.write(shellcode)
 
 
 if __name__ == '__main__':
@@ -90,6 +130,9 @@ if __name__ == '__main__':
                         required=True, help='Path of the EXE file')
     parser.add_argument('-o', '--output-file-path', required=True,
                         help='Path of the shellcode file')
+    parser.add_argument('-vn', '--variable-name',
+                        help='Name of the variable in the include file. Required if the output file path is of C/ASM include')
+
     # Sub commands
     subparsers = parser.add_subparsers(dest='sub_command')
 
