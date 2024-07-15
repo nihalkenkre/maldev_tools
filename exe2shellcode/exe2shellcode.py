@@ -46,7 +46,7 @@ def main(args):
         section_name = section_header[0:8].decode('utf-8').rstrip('\x00')
 
         if '.data' in section_name or '.reloc' in section_name:
-            print(
+            raise LookupError(
                 'EXE has a .data/.reloc section, shellcode will not work. Aborting...')
             return
 
@@ -79,10 +79,16 @@ def main(args):
         shellcode = xored_data
 
     # Write out the shellcode to file
-    # Check if the output file is a C/ASM include
+    # Check if the output file is a C/ASM include or not
+    # and write out the data in the required format
     file_ext = args.output_file_path.split('.')[-1]
 
     if file_ext == 'h' or file_ext == 'hpp' or file_ext == 'hxx':
+        if args.variable_name is None:
+            raise ValueError(
+                'No variable name passed. Cannot write to header file')
+            return
+
         output_str = 'unsigned char ' + args.variable_name + '[] = {'
 
         output_byte_counter = 0
@@ -102,6 +108,11 @@ def main(args):
             output_file.write(output_str)
 
     elif file_ext == 'asm' or file_ext == 's':
+        if args.variable_name is None:
+            raise ValueError(
+                'No variable name passed. Cannot write to header file')
+            return
+
         output_str = args.variable_name + ': db '
 
         output_byte_counter = 0
