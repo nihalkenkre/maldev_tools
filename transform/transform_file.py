@@ -72,10 +72,8 @@ def main(args):
                         output_str += ','
                         output_byte_counter += 1
 
-                output_str += '0'
-
                 output_str += '\n'
-                output_str += '.len equ $ - ' + args.variable_name + ' - 1\n'
+                output_str += '.len equ $ - ' + args.variable_name + '\n'
 
                 output_file.write(output_str)
 
@@ -99,7 +97,7 @@ if __name__ == '__main__':
         '-b', '--binary', action='store_true', help='Output the contents as raw binary')
 
     # sub commands
-    subparsers = parser.add_subparsers(dest='sub_command', required=True)
+    subparsers = parser.add_subparsers(dest='sub_command', required=False)
 
     # XOR sub command
     xor_subparser = subparsers.add_parser('xor')

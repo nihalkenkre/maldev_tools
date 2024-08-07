@@ -48,7 +48,6 @@ def main(args):
         if '.data' in section_name or '.reloc' in section_name:
             raise LookupError(
                 'EXE has a .data/.reloc section, shellcode will not work. Aborting...')
-            return
 
         if section_name == '.text':
             text_raw_data_size = int.from_bytes(
@@ -87,7 +86,6 @@ def main(args):
         if args.variable_name is None:
             raise ValueError(
                 'No variable name passed. Cannot write to header file')
-            return
 
         output_str = 'unsigned char ' + args.variable_name + '[] = {'
 
@@ -111,7 +109,6 @@ def main(args):
         if args.variable_name is None:
             raise ValueError(
                 'No variable name passed. Cannot write to header file')
-            return
 
         output_str = args.variable_name + ': db '
 
